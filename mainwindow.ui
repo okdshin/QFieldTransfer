@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>309</width>
+    <height>163</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>QFieldTransfer</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLineEdit" name="before_file_path_line_edit">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="before_button">
+        <property name="text">
+         <string>BeforeFile</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLineEdit" name="after_file_path_line_edit">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="after_button">
+        <property name="text">
+         <string>AfterFile</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>FieldSize(width, height)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="width_spin_box">
+        <property name="maximum">
+         <number>99999</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="height_spin_box">
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
+        <property name="maximum">
+         <number>99999</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QPushButton" name="transfer_button">
+      <property name="text">
+       <string>Transfer!</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>309</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>before_button</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>SetBeforeFilePath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>41</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>304</x>
+     <y>32</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>after_button</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>SetAfterFilePath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>279</x>
+     <y>76</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>305</x>
+     <y>65</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>transfer_button</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>Transfer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>125</x>
+     <y>141</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>303</x>
+     <y>124</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>SetBeforeFilePath()</slot>
+  <slot>SetAfterFilePath()</slot>
+  <slot>Transfer()</slot>
+ </slots>
+</ui>
