@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/sound">
+        <file>tm2_metalhit000.wav</file>
+    </qresource>
+</RCC>

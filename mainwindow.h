@@ -18,7 +18,7 @@ public:
     ~MainWindow();
 
 private:
-    void SetFilePath(QLineEdit* line_edit, std::string& result_file_path);
+    void SetFilePath(QLineEdit* line_edit, const QString& caption, std::string& result_file_path);
 
 public slots:
     void SetBeforeFilePath();
