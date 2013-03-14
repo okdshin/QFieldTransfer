@@ -45,7 +45,7 @@ auto MainWindow::SetAfterFilePath() -> void {
 }
 
 auto MainWindow::Transfer() -> void {
-
+    this->ui->transfer_button->setEnabled(false);
     if(before_file_path.empty()){
         QMessageBox::information(0, "Error!", "please set \"BeforeFile\" path.");
         return;
@@ -72,6 +72,7 @@ auto MainWindow::OnTransferFinished(unsigned int width, unsigned int height)cons
     }
 
     QString file_path_qstr = QFileDialog::getSaveFileName(0, "SaveResultFile");
+    this->ui->transfer_button->setEnabled(true);
     if(file_path_qstr.isEmpty()){
         this->ui->progressBar->setValue(0);
         return;
@@ -79,6 +80,7 @@ auto MainWindow::OnTransferFinished(unsigned int width, unsigned int height)cons
     std::ofstream field_file(file_path_qstr.toStdString().c_str());
     field_transfer::OutputFieldFormat(width, height, transfered_field, raw_field, field_file);
 
+    QMessageBox::information(0, "Save finished!", "Save successfully finished!");
     this->ui->progressBar->setValue(0);
 
 }
