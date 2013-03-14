@@ -4,6 +4,10 @@
 #include <QMainWindow>
 #include <string>
 #include <qlineedit.h>
+#include <boost/asio.hpp>
+#include <boost/thread.hpp>
+#include <QThread>
+#include "transferer.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,10 +28,13 @@ public slots:
     void SetBeforeFilePath();
     void SetAfterFilePath();
     void Transfer();
+    void OnTransferFinished(unsigned int width, unsigned height)const;
 
 private:
     Ui::MainWindow *ui;
     std::string before_file_path, after_file_path;
+
+    Transferer* transferer;
 
 };
 

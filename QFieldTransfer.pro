@@ -4,14 +4,15 @@
 #
 #-------------------------------------------------
 
+CONFIG += qt
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = QFieldTransfer
 TEMPLATE = app
-QMAKE_CXXFLAGS += -std=gnu++11
-LIBS += -lboost_regex
+QMAKE_CXXFLAGS += -std=gnu++11 -O3
+LIBS += -lboost_regex -lboost_system -lboost_thread
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -23,7 +24,8 @@ SOURCES += main.cpp\
     FieldTransfer/Matrix.cpp \
     FieldTransfer/FieldTransfer.cpp \
     FieldTransfer/Index.cpp \
-    FieldTransfer/Formula.cpp
+    FieldTransfer/Formula.cpp \
+    transferer.cpp
 
 HEADERS  += mainwindow.h \
     FieldTransfer/VectorListPair.h \
@@ -34,7 +36,8 @@ HEADERS  += mainwindow.h \
     FieldTransfer/Matrix.h \
     FieldTransfer/FieldTransfer.h \
     FieldTransfer/Index.h \
-    FieldTransfer/Formula.h
+    FieldTransfer/Formula.h \
+    transferer.h
 
 FORMS    += mainwindow.ui
 

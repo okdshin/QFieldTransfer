@@ -3,15 +3,23 @@
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qsound.h>
-#include "FieldTransfer/FieldTransfer.h"
+//#include "FieldTransfer/FieldTransfer.h"
+#include <boost/bind.hpp>
+#include "transferer.h"
+#include <QThread>
 
-using namespace field_transfer;
+//using namespace field_transfer;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    transferer(new Transferer(this))
 {
     ui->setupUi(this);
+    QObject::connect(this->transferer, SIGNAL(OnFinished(uint, uint)), this, SLOT(OnTransferFinished(uint, uint)));
+    QObject::connect(this->transferer, SIGNAL(Indicate(int)), this->ui->progressBar, SLOT(setValue(int)));
+
+    transferer->SetIndicatorMax(this->ui->progressBar->maximum());
 }
 
 MainWindow::~MainWindow()
@@ -37,60 +45,42 @@ auto MainWindow::SetAfterFilePath() -> void {
 }
 
 auto MainWindow::Transfer() -> void {
-    try{
 
-        if(this->before_file_path.empty()){
-            QMessageBox::information(this, "Error!", "please set \"BeforeFile\" path.");
-            return;
-        }
-        else if(this->after_file_path.empty()){
-            QMessageBox::information(this, "Error!", "please set \"AfterFile\" path.");
-            return;
-        }
-
-        const unsigned int x_col_index = this->ui->x_column_index_spin_box->value();
-        const unsigned int y_col_index = this->ui->y_column_index_spin_box->value();
-        const auto vector_list_pair =
-            CreateVectorListPairFromFile(
-                x_col_index, y_col_index,
-                this->before_file_path.c_str(),
-                this->after_file_path.c_str());
-
-        //OutputVectorList(vector_list_pair.GetBeforeVectorList(), std::cout);
-        //OutputVectorList(vector_list_pair.GetAfterVectorList(), std::cout);
-
-        const auto optimized = TernarySearch(
-            0, 2*M_PI,
-            2*M_PI/1000,
-            [&](Number theta)->Number {
-                return MakeMeMin(theta, vector_list_pair);
-            });
-
-        const auto translated_route = CalcTranslateRoute(vector_list_pair);
-
-        const unsigned int width = this->ui->width_spin_box->value();
-        const unsigned int height = this->ui->height_spin_box->value();
-        const auto raw_field = CreateField(width, height, 1.0);
-        const auto transfered_field =
-                TransferVectorList(raw_field, optimized, translated_route,
-            [this, &raw_field](unsigned int i){
-                this->ui->progressBar->setValue(this->ui->progressBar->maximum()*i/raw_field.Size());
-            }
-        );
-
-        if(this->ui->checkBox->isChecked()){
-            QSound::play(":/sound/tm2_metalhit000.wav");
-        }
-        QString file_path_qstr = QFileDialog::getSaveFileName(this, "SaveResultFile");
-        if(file_path_qstr.isEmpty()){
-            return;
-        }
-        std::ofstream field_file(file_path_qstr.toStdString().c_str());
-        OutputFieldFormat(width, height, transfered_field, raw_field, field_file);
+    if(before_file_path.empty()){
+        QMessageBox::information(0, "Error!", "please set \"BeforeFile\" path.");
+        return;
     }
-    catch(char const* error){
-        QMessageBox::information(this, "Error!", error);
+    else if(after_file_path.empty()){
+        QMessageBox::information(0, "Error!", "please set \"AfterFile\" path.");
         return;
     }
 
+    const unsigned int x_col_index = this->ui->x_column_index_spin_box->value();
+    const unsigned int y_col_index = this->ui->y_column_index_spin_box->value();
+    const unsigned int width = this->ui->width_spin_box->value();
+    const unsigned int height = this->ui->height_spin_box->value();
+
+    this->transferer->SetParameta(x_col_index, y_col_index, this->before_file_path, this->after_file_path, width, height);
+    transferer->start();
 }
+
+auto MainWindow::OnTransferFinished(unsigned int width, unsigned int height)const -> void {
+    const auto raw_field = this->transferer->GetRawField();
+    const auto transfered_field = this->transferer->GetTransferedField();
+    if(this->ui->checkBox->isChecked()){
+        QSound::play(":/sound/tm2_metalhit000.wav");
+    }
+
+    QString file_path_qstr = QFileDialog::getSaveFileName(0, "SaveResultFile");
+    if(file_path_qstr.isEmpty()){
+        this->ui->progressBar->setValue(0);
+        return;
+    }
+    std::ofstream field_file(file_path_qstr.toStdString().c_str());
+    field_transfer::OutputFieldFormat(width, height, transfered_field, raw_field, field_file);
+
+    this->ui->progressBar->setValue(0);
+
+}
+
+
